@@ -64,7 +64,7 @@
   const style = document.createElement("style");
   style.textContent = `
     #pt2-mod-launcher{position:fixed;right:18px;top:18px;z-index:99999;background:#b5121b;color:#fff;border:2px solid #fff;padding:10px 15px;font:bold 15px Arial;cursor:pointer;border-radius:8px;box-shadow:0 3px 14px #0009}
-    #pt2-mod-panel{position:fixed;right:18px;top:64px;z-index:99999;width:270px;background:#17191f;color:#fff;border:2px solid #b5121b;border-radius:10px;padding:16px;font:14px Arial;box-shadow:0 8px 30px #000b}
+    #pt2-mod-panel{position:fixed;right:18px;top:64px;z-index:99999;width:180px;box-sizing:border-box;background:#17191f;color:#fff;border:2px solid #b5121b;border-radius:10px;padding:16px;font:14px Arial;box-shadow:0 8px 30px #000b}
     #pt2-mod-panel h2{margin:0 0 8px;color:#ff5a62;font-size:20px}
     #pt2-mod-panel p{color:#ccc;line-height:1.4}
     #pt2-mod-panel button{background:#b5121b;color:white;border:0;border-radius:6px;padding:8px 12px;cursor:pointer}
