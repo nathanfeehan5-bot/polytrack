@@ -5,6 +5,38 @@
   const LOCK_NAME = "closemenumod";
   const STORAGE_KEY = "polytrack2_modmenu_unlocked";
 
+  // Capture the simulation worker so the menu can send Fly controls to it.
+  const NativeWorker = window.Worker;
+  window.Worker = class extends NativeWorker {
+    constructor(...args) {
+      super(...args);
+      window.__pt2SimulationWorker = this;
+    }
+  };
+
+  let flyEnabled = false;
+  let flyKeyDown = false;
+  function sendFlyControl(up) {
+    const worker = window.__pt2SimulationWorker;
+    if (worker) worker.postMessage({ messageType: "PolytrackFlyControl", up: !!up });
+  }
+
+  window.addEventListener("keydown", event => {
+    if (event.code === "Space" && flyEnabled) {
+      event.preventDefault();
+      if (!flyKeyDown) { flyKeyDown = true; sendFlyControl(true); }
+    }
+  });
+  window.addEventListener("keyup", event => {
+    if (event.code === "Space" && flyKeyDown) {
+      flyKeyDown = false;
+      sendFlyControl(false);
+    }
+  });
+  window.addEventListener("blur", () => {
+    if (flyKeyDown) { flyKeyDown = false; sendFlyControl(false); }
+  });
+
   const isUnlocked = () => localStorage.getItem(STORAGE_KEY) === "true";
   const setUnlocked = value => localStorage.setItem(STORAGE_KEY, value ? "true" : "false");
 
@@ -40,13 +72,22 @@
       <button class="pt2-close" type="button">✕</button>
       <h2>POLYTRACK 2 MODS</h2>
       <p>Secret menu unlocked.</p>
-      <div class="pt2-feature"><strong>Fly</strong><div class="pt2-status">Not connected to car physics yet</div></div>
+      <div class="pt2-feature"><strong>Fly</strong><div class="pt2-status" id="pt2-fly-status">OFF — turn on to use Space</div><button id="pt2-fly-toggle" type="button">Enable Fly</button><div style="font-size:11px;color:#aaa;margin-top:5px">Hold SPACE to rise. Release to stop rising.</div></div>
       <div class="pt2-feature"><strong>Super Speed</strong><div class="pt2-status">Not connected to car physics yet</div></div>
       <div class="pt2-feature"><strong>Slow Other Cars</strong><div class="pt2-status">Not connected to multiplayer yet</div></div>
       <div class="pt2-feature"><strong>Invisibility</strong><div class="pt2-status">Not connected to car rendering yet</div></div>
       <p style="font-size:11px">Enter closemenumod as your player name to lock this menu.</p>
     `;
     panel.querySelector(".pt2-close").addEventListener("click", () => panel.hidden = true);
+    const flyButton = panel.querySelector("#pt2-fly-toggle");
+    const flyStatus = panel.querySelector("#pt2-fly-status");
+    flyButton.addEventListener("click", () => {
+      flyEnabled = !flyEnabled;
+      if (!flyEnabled && flyKeyDown) { flyKeyDown = false; sendFlyControl(false); }
+      flyButton.textContent = flyEnabled ? "Disable Fly" : "Enable Fly";
+      flyStatus.textContent = flyEnabled ? "ON — hold SPACE to rise" : "OFF — turn on to use Space";
+      flyStatus.style.color = flyEnabled ? "#8dffad" : "#ffb8bb";
+    });
     document.body.appendChild(panel);
   }
 
