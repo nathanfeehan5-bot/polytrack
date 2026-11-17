@@ -28784,7 +28784,6 @@ function reconstructStates(buffer) {
         ;
         importScripts("lib/ammo.wasm.js");
         const Dv = [];
-        let pt2FlyUp = false;
         onmessage = e => {
             Dv.push(e)
         }
@@ -28793,10 +28792,6 @@ function reconstructStates(buffer) {
             let t = new p_([]);
             const n = [];
             function i(e) {
-                if (e.data.messageType === "PolytrackFlyControl") {
-                    pt2FlyUp = !!e.data.up;
-                    return;
-                }
                 switch (e.data.messageType) {
                 case g_.Init:
                     {
@@ -29042,11 +29037,6 @@ function reconstructStates(buffer) {
                 const i = e.id
                   , r = e.model
                   , a = r.controls.getControls(r.getTime().numberOfFrames);
-                if (pt2FlyUp) {
-                    const lift = new Ammo.btVector3(0, 20000, 0);
-                    l_(r, kA, "f").applyCentralForce(lift);
-                    Ammo.destroy(lift);
-                }
                 r.step();
                 const s = r.getPosition()
                   , o = r.getQuaternion()
