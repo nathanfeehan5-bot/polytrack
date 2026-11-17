@@ -21,9 +21,21 @@
   function setInvisibility(enabled) {
     invisibilityEnabled = enabled;
     const cars = window.__pt2CarObjects || [];
-    for (const car of cars) {
-      if (car && typeof car.setVisible === "function") car.setVisible(!enabled);
-    }
+    cars.forEach((car, index) => {
+      if (!car) return;
+      if (!enabled) {
+        if (typeof car.setVisible === "function") car.setVisible(true);
+        if (typeof car.setOpacity === "function") car.setOpacity(1);
+        return;
+      }
+      if (index === 0) {
+        // The first car created is the local player's car.
+        if (typeof car.setVisible === "function") car.setVisible(true);
+        if (typeof car.setOpacity === "function") car.setOpacity(0.3);
+      } else if (typeof car.setVisible === "function") {
+        car.setVisible(false);
+      }
+    });
   }
   function sendFlyControl(up) {
     const worker = window.__pt2SimulationWorker;
@@ -84,7 +96,7 @@
       <div class="pt2-feature"><strong>Fly</strong><div class="pt2-status" id="pt2-fly-status">OFF — turn on to use Q</div><button id="pt2-fly-toggle" type="button">Enable Fly</button><div style="font-size:11px;color:#aaa;margin-top:5px">Hold Q to rise. Release to stop rising.</div></div>
       <div class="pt2-feature"><strong>Super Speed</strong><div class="pt2-status">Not connected to car physics yet</div></div>
       <div class="pt2-feature"><strong>Slow Other Cars</strong><div class="pt2-status">Not connected to multiplayer yet</div></div>
-      <div class="pt2-feature"><strong>Invisibility</strong><div class="pt2-status" id="pt2-invis-status">OFF</div><button id="pt2-invis-toggle" type="button">Enable Invisibility</button><div style="font-size:11px;color:#aaa;margin-top:5px">Hide the cars currently loaded in the game.</div></div>
+      <div class="pt2-feature"><strong>Invisibility</strong><div class="pt2-status" id="pt2-invis-status">OFF</div><button id="pt2-invis-toggle" type="button">Enable Invisibility</button><div style="font-size:11px;color:#aaa;margin-top:5px">Your car stays faintly visible; other cars are hidden on your screen.</div></div>
       <p style="font-size:11px">Enter closemenumod as your player name to lock this menu.</p>
     `;
     panel.querySelector(".pt2-close").addEventListener("click", () => panel.hidden = true);
@@ -102,7 +114,7 @@
     invisButton.addEventListener("click", () => {
       setInvisibility(!invisibilityEnabled);
       invisButton.textContent = invisibilityEnabled ? "Disable Invisibility" : "Enable Invisibility";
-      invisStatus.textContent = invisibilityEnabled ? "ON — cars hidden" : "OFF";
+      invisStatus.textContent = invisibilityEnabled ? "ON — your car is faint, others hidden" : "OFF";
       invisStatus.style.color = invisibilityEnabled ? "#8dffad" : "#ffb8bb";
     });
     document.body.appendChild(panel);
