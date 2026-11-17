@@ -1,0 +1,87 @@
+(() => {
+  "use strict";
+
+  const UNLOCK_NAME = "openmenumod";
+  const LOCK_NAME = "closemenumod";
+  const STORAGE_KEY = "polytrack2_modmenu_unlocked";
+
+  const isUnlocked = () => localStorage.getItem(STORAGE_KEY) === "true";
+  const setUnlocked = value => localStorage.setItem(STORAGE_KEY, value ? "true" : "false");
+
+  const style = document.createElement("style");
+  style.textContent = `
+    #pt2-mod-launcher{position:fixed;right:18px;top:18px;z-index:99999;background:#b5121b;color:#fff;border:2px solid #fff;padding:10px 15px;font:bold 15px Arial;cursor:pointer;border-radius:8px;box-shadow:0 3px 14px #0009}
+    #pt2-mod-panel{position:fixed;right:18px;top:64px;z-index:99999;width:270px;background:#17191f;color:#fff;border:2px solid #b5121b;border-radius:10px;padding:16px;font:14px Arial;box-shadow:0 8px 30px #000b}
+    #pt2-mod-panel h2{margin:0 0 8px;color:#ff5a62;font-size:20px}
+    #pt2-mod-panel p{color:#ccc;line-height:1.4}
+    #pt2-mod-panel button{background:#b5121b;color:white;border:0;border-radius:6px;padding:8px 12px;cursor:pointer}
+    #pt2-mod-panel .pt2-close{float:right;background:#444}
+    #pt2-mod-panel .pt2-feature{padding:9px 0;border-top:1px solid #393b43}
+    #pt2-mod-panel .pt2-status{color:#ffb8bb;font-size:12px}
+  `;
+  document.head.appendChild(style);
+
+  function buildMenu() {
+    if (!isUnlocked() || document.getElementById("pt2-mod-launcher")) return;
+
+    const launcher = document.createElement("button");
+    launcher.id = "pt2-mod-launcher";
+    launcher.textContent = "⚙ MOD MENU";
+    launcher.addEventListener("click", () => {
+      const panel = document.getElementById("pt2-mod-panel");
+      panel.hidden = !panel.hidden;
+    });
+    document.body.appendChild(launcher);
+
+    const panel = document.createElement("section");
+    panel.id = "pt2-mod-panel";
+    panel.hidden = true;
+    panel.innerHTML = `
+      <button class="pt2-close" type="button">✕</button>
+      <h2>POLYTRACK 2 MODS</h2>
+      <p>Secret menu unlocked.</p>
+      <div class="pt2-feature"><strong>Fly</strong><div class="pt2-status">Not connected to car physics yet</div></div>
+      <div class="pt2-feature"><strong>Super Speed</strong><div class="pt2-status">Not connected to car physics yet</div></div>
+      <div class="pt2-feature"><strong>Slow Other Cars</strong><div class="pt2-status">Not connected to multiplayer yet</div></div>
+      <div class="pt2-feature"><strong>Invisibility</strong><div class="pt2-status">Not connected to car rendering yet</div></div>
+      <p style="font-size:11px">Enter closemenumod as your player name to lock this menu.</p>
+    `;
+    panel.querySelector(".pt2-close").addEventListener("click", () => panel.hidden = true);
+    document.body.appendChild(panel);
+  }
+
+  function removeMenu() {
+    document.getElementById("pt2-mod-launcher")?.remove();
+    document.getElementById("pt2-mod-panel")?.remove();
+  }
+
+  function checkName(value) {
+    const name = String(value || "").trim().toLowerCase();
+    if (name === UNLOCK_NAME) {
+      setUnlocked(true);
+      buildMenu();
+    } else if (name === LOCK_NAME) {
+      setUnlocked(false);
+      removeMenu();
+    }
+  }
+
+  function watchNickname() {
+    document.querySelectorAll(".nickname input, .nickname input[type=text], input").forEach(input => {
+      if (input.dataset.pt2ModWatcher) return;
+      input.dataset.pt2ModWatcher = "1";
+      input.addEventListener("change", () => checkName(input.value));
+      input.addEventListener("keydown", event => {
+        if (event.key === "Enter") checkName(input.value);
+      });
+      input.addEventListener("blur", () => checkName(input.value));
+    });
+  }
+
+  if (isUnlocked()) buildMenu();
+  watchNickname();
+  new MutationObserver(() => {
+    watchNickname();
+    if (isUnlocked()) buildMenu();
+  }).observe(document.documentElement, { childList: true, subtree: true });
+})();
