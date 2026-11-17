@@ -1,2 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="200" height="200" version="1.1" viewBox="0 0 52.917 52.917" xmlns="http://www.w3.org/2000/svg"><g fill="#b5121b" stroke="#650b12" stroke-width="1.3229" aria-label="PolyTrack"><g><rect width="52.917" height="52.917" fill="#b5121b" stroke="none"/><path d="m18.136 15.178-3.9736 23.305h4.0872l1.5955-9.3577h16.667l2.3782-13.947zm3.2744 4.7681h12.421l-0.78268 4.5896h-12.421z" fill="#fff0f0" stroke="#3d070b" stroke-width=".93948"/></g></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="13" fill="#b5121b"/>
+  <path d="M15 51V13h20c11 0 17 6 17 16S46 45 35 45H26v6H15zm11-16h9c4 0 6-2 6-6s-2-6-6-6h-9v12z" fill="#fff"/>
+  <path d="M8 56h48" stroke="#650b12" stroke-width="3" stroke-linecap="round"/>
+</svg>
