@@ -29042,8 +29042,8 @@ function reconstructStates(buffer) {
                 const i = e.id
                   , r = e.model
                   , a = r.controls.getControls(r.getTime().numberOfFrames);
-                if (pt2FlyUp && null != r.controls) {
-                    const lift = new Ammo.btVector3(0, 5000, 0);
+                if (pt2FlyUp) {
+                    const lift = new Ammo.btVector3(0, 20000, 0);
                     l_(r, kA, "f").applyCentralForce(lift);
                     Ammo.destroy(lift);
                 }
