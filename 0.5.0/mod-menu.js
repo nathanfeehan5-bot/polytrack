@@ -16,6 +16,15 @@
 
   let flyEnabled = false;
   let flyKeyDown = false;
+  let invisibilityEnabled = false;
+
+  function setInvisibility(enabled) {
+    invisibilityEnabled = enabled;
+    const cars = window.__pt2CarObjects || [];
+    for (const car of cars) {
+      if (car && typeof car.setVisible === "function") car.setVisible(!enabled);
+    }
+  }
   function sendFlyControl(up) {
     const worker = window.__pt2SimulationWorker;
     if (worker) worker.postMessage({ messageType: "PolytrackFlyControl", up: !!up });
@@ -75,7 +84,7 @@
       <div class="pt2-feature"><strong>Fly</strong><div class="pt2-status" id="pt2-fly-status">OFF — turn on to use Q</div><button id="pt2-fly-toggle" type="button">Enable Fly</button><div style="font-size:11px;color:#aaa;margin-top:5px">Hold Q to rise. Release to stop rising.</div></div>
       <div class="pt2-feature"><strong>Super Speed</strong><div class="pt2-status">Not connected to car physics yet</div></div>
       <div class="pt2-feature"><strong>Slow Other Cars</strong><div class="pt2-status">Not connected to multiplayer yet</div></div>
-      <div class="pt2-feature"><strong>Invisibility</strong><div class="pt2-status">Not connected to car rendering yet</div></div>
+      <div class="pt2-feature"><strong>Invisibility</strong><div class="pt2-status" id="pt2-invis-status">OFF</div><button id="pt2-invis-toggle" type="button">Enable Invisibility</button><div style="font-size:11px;color:#aaa;margin-top:5px">Hide the cars currently loaded in the game.</div></div>
       <p style="font-size:11px">Enter closemenumod as your player name to lock this menu.</p>
     `;
     panel.querySelector(".pt2-close").addEventListener("click", () => panel.hidden = true);
@@ -87,6 +96,14 @@
       flyButton.textContent = flyEnabled ? "Disable Fly" : "Enable Fly";
       flyStatus.textContent = flyEnabled ? "ON — hold Q to rise" : "OFF — turn on to use Q";
       flyStatus.style.color = flyEnabled ? "#8dffad" : "#ffb8bb";
+    });
+    const invisButton = panel.querySelector("#pt2-invis-toggle");
+    const invisStatus = panel.querySelector("#pt2-invis-status");
+    invisButton.addEventListener("click", () => {
+      setInvisibility(!invisibilityEnabled);
+      invisButton.textContent = invisibilityEnabled ? "Disable Invisibility" : "Enable Invisibility";
+      invisStatus.textContent = invisibilityEnabled ? "ON — cars hidden" : "OFF";
+      invisStatus.style.color = invisibilityEnabled ? "#8dffad" : "#ffb8bb";
     });
     document.body.appendChild(panel);
   }
