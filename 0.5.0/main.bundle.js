@@ -27859,6 +27859,7 @@ function reconstructStates(buffer) {
             constructor(e, t, n, i, r, a, s, o, l) {
                 var c;
                 if (hv.add(this),
+                (window.__pt2CarObjects || (window.__pt2CarObjects = [])).push(this),
                 uv.set(this, void 0),
                 pv.set(this, null),
                 fv.set(this, 1),
