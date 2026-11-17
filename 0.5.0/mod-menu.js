@@ -22,13 +22,13 @@
   }
 
   window.addEventListener("keydown", event => {
-    if (event.code === "Space" && flyEnabled) {
+    if (event.code === "KeyQ" && flyEnabled) {
       event.preventDefault();
       if (!flyKeyDown) { flyKeyDown = true; sendFlyControl(true); }
     }
   });
   window.addEventListener("keyup", event => {
-    if (event.code === "Space" && flyKeyDown) {
+    if (event.code === "KeyQ" && flyKeyDown) {
       flyKeyDown = false;
       sendFlyControl(false);
     }
@@ -72,7 +72,7 @@
       <button class="pt2-close" type="button">✕</button>
       <h2>POLYTRACK 2 MODS</h2>
       <p>Secret menu unlocked.</p>
-      <div class="pt2-feature"><strong>Fly</strong><div class="pt2-status" id="pt2-fly-status">OFF — turn on to use Space</div><button id="pt2-fly-toggle" type="button">Enable Fly</button><div style="font-size:11px;color:#aaa;margin-top:5px">Hold SPACE to rise. Release to stop rising.</div></div>
+      <div class="pt2-feature"><strong>Fly</strong><div class="pt2-status" id="pt2-fly-status">OFF — turn on to use Q</div><button id="pt2-fly-toggle" type="button">Enable Fly</button><div style="font-size:11px;color:#aaa;margin-top:5px">Hold Q to rise. Release to stop rising.</div></div>
       <div class="pt2-feature"><strong>Super Speed</strong><div class="pt2-status">Not connected to car physics yet</div></div>
       <div class="pt2-feature"><strong>Slow Other Cars</strong><div class="pt2-status">Not connected to multiplayer yet</div></div>
       <div class="pt2-feature"><strong>Invisibility</strong><div class="pt2-status">Not connected to car rendering yet</div></div>
@@ -85,7 +85,7 @@
       flyEnabled = !flyEnabled;
       if (!flyEnabled && flyKeyDown) { flyKeyDown = false; sendFlyControl(false); }
       flyButton.textContent = flyEnabled ? "Disable Fly" : "Enable Fly";
-      flyStatus.textContent = flyEnabled ? "ON — hold SPACE to rise" : "OFF — turn on to use Space";
+      flyStatus.textContent = flyEnabled ? "ON — hold Q to rise" : "OFF — turn on to use Q";
       flyStatus.style.color = flyEnabled ? "#8dffad" : "#ffb8bb";
     });
     document.body.appendChild(panel);
